@@ -1,0 +1,47 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+    <section class="main-section flex-item">
+        <h3>Add New Dance Class for : {{ danceSchool.name }} </h3>
+        <div class="top-div">
+            <div class="left-top-div">
+                <form action="{{ url_for('createDanceClass',dance_school_id=danceSchool.id) }}"
+                  method="POST">
+                    <table>
+                        <tr>
+                            <td> Name :</td>
+                            <td><input type="text" name="name"></td>
+                        </tr>
+                        <tr>
+                            <td> Description :</td>
+                            <td><textarea name="description" cols="35" rows="4">
+                                </textarea></td>
+                        </tr>
+                        <tr>
+                            <td> Teacher :</td>
+                            <td><input type="text" name="teacher"></td>
+                        </tr>
+                        <tr>
+                            <td> Sessions :</td>
+                            <td><input type="text" name="sessions"></td>
+                        </tr>
+                        <tr>
+                            <td> Fees / Session :</td>
+                            <td><input type="text" name="fees"> $</td>
+                        </tr>
+                        <tr>
+                            <td><input type="submit" value="Create"></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="right-top-div">
+                <span>
+                    <a href='{{ url_for('showDanceClasses',dance_school_id=danceSchool.id) }}'>
+                    Back</a>
+                </span>
+            </div>
+            <div class="top-div-clearfix"></div>
+        </div>
+    </section>
+{% endblock %}

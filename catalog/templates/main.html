@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+		<head>
+    		<title> The Dance Schools App</title>
+      	<meta charset="utf-8">
+      	<!--viewport property to make the webpage responsive-->
+      	<meta name="viewport" content="width=device-width,initial-scale=1">
+      	<!--link to css page for styling the webpage-->
+		  	<link rel=stylesheet type=text/css href="{{ url_for('static',
+      	filename='styles.css') }}">
+		</head>
+		<body>
+				<div class="container">
+						{% block content %}
+						{% endblock %}
+				</div>
+		</body>
+</html>

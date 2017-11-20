@@ -1,0 +1,43 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+      <!--MESSAGE FLASHING EXAMPLE -->
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <ul>
+          {% for message in messages %}
+          <li><strong>{{message}}</strong></li>
+          {% endfor %}
+      </ul>
+      {% endif %}
+      {% endwith %}
+      <section class="main-section flex-item">
+          <h3>Dance Schools :</h3>
+          <div class="top-div">
+              <div class="left-top-div">
+                  {% for d in danceSchools %}
+                  <p>
+                      <span class="title">
+                          <a href="{{url_for('showDanceClasses',dance_school_id=d.id)}}">
+                          {{ d.name }} </a>
+                      </span>
+                      <br>
+                      <span class="subtitle">{{ d.address }}</span>
+                      <br>
+                      <span> <a href="{{url_for('editDanceSchool',dance_school_id=d.id)}}">
+                      Edit </a> </span>
+                      <span> <a href="{{url_for('deleteDanceSchool',dance_school_id=d.id)}}">
+                      Delete </a> </span>
+                  </p>
+                  {% endfor %}
+              </div>
+              <div class="right-top-div">
+                  <span>
+                      <a href='{{url_for('createDanceSchool')}}'>
+                        Add New Dance School</a>
+                  </span>
+              </div>
+              <div class="top-div-clearfix"></div>
+          </div>
+      </section>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+    <section class="main-section flex-item">
+        <h3>Edit Dance Class : {{ danceClass.name }}</h3>
+        <div class="top-div">
+            <div class="left-top-div">
+                <form action="{{url_for('editDanceClass',dance_school_id=danceSchool.id,dance_class_id=dance_class_id)}}"
+                method="POST">
+                    <table>
+                        <tr>
+                            <td>Name :</td>
+                            <td><input type="text" name="name"
+                               placeholder="{{danceClass.name}}"></td>
+                            </tr>
+                            <tr>
+                                <td> Description:</td>
+                                <td><textarea name="description" cols="35"
+                                  rows="4" placeholder="{{danceClass.description}}">
+                                  </textarea></td>
+                            </tr>
+                            <tr>
+                                <td> Teacher :</td>
+                                <td><input type="text" name="teacher"
+                                  placeholder="{{danceClass.teacher}}"></td>
+                            </tr>
+                            <tr>
+                                <td> Sessions :</td>
+                                <td><input type="text" name="sessions"
+                                  placeholder="{{danceClass.sessions}}"></td>
+                            </tr>
+                            <tr>
+                                <td> Fees / Session :</td>
+                                <td><input type="text" name="fees"
+                                  placeholder="{{danceClass.fees}}"> $</td>
+                            </tr>
+                            <tr>
+                                <td><input type="submit" value="Update"></td>
+                            </tr>
+                        </table>
+                   </form>
+              </div>
+              <div class="right-top-div">
+                  <span>
+                      <a href='{{url_for('showDanceClasses',dance_school_id=danceSchool.id)}}'>
+                       Back</a>
+                  </span>
+              </div>
+              <div class="top-div-clearfix"></div>
+          </div>
+      </section>
+{% endblock %}

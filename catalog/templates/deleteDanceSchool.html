@@ -1,0 +1,28 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+      <section class="main-section flex-item">
+          <h3>Delete Dance School : {{ danceSchool.name }}</h3>
+          <div class="top-div">
+              <div class="left-top-div">
+                  <form action="{{url_for('deleteDanceSchool',dance_school_id=dance_school_id)}}"
+                  method="POST">
+                      <table>
+                          <tr>
+                              <td>Are you sure you want to delete
+                                {{danceSchool.name}} ?</td>
+                          </tr>
+                          <tr>
+                            <td><input type="submit" value="Delete"></td>
+                          </tr>
+                      </table>
+                 </form>
+               </div>
+               <div class="right-top-div">
+                  <a href='{{url_for('showDanceSchools')}}'>
+                   Back</a>
+               </div>
+               <div class="top-div-clearfix"></div>
+           </div>
+      </section>
+{% endblock %}

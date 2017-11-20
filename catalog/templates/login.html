@@ -1,0 +1,29 @@
+{% extends "loginScripts.html" %}
+{% block content %}
+{% include "header.html" %}
+    <div class="login-section">
+        <div class="login-box">
+          <!--google account login-->
+            <div id="signinButton">
+                <span class="g-signin"
+                  data-scope="openid email"
+                  data-clientid="310870043194-i2ac0nglo8023kac0v0cukpfppd9udsa.apps.googleusercontent.com"
+                  data-redirecturi="postmessage"
+                  data-accesstype="offline"
+                  data-cookiepolicy="single_host_origin"
+                  data-callback="signInCallback"
+                  data-approvalprompt="force">
+                </span>
+            </div>
+            <div id="result"></div>
+            <br>
+            <!--facebook login button-->
+            <button>
+                <fb:login-button scope="public_profile,email"
+                onlogin="sendTokenToServer();">
+                <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
+                </fb:login-button>
+            </button>
+        </div>
+    </div>
+{% endblock %}
