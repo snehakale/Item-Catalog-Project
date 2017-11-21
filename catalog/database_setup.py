@@ -32,6 +32,8 @@ class DanceSchool(Base):
     # Foreign key for user table
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
+    # Cascade relationship for delete operation
+    danceclass = relationship('DanceClass', cascade='all, delete-orphan')
 
     @property
     def serialize(self):

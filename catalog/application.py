@@ -93,18 +93,21 @@ def fbconnect():
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
-    
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
-    
+
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    
+    output += ' " style = "width: 300px; height: 300px;'
+    output += 'border-radius: 150px;-webkit-border-radius: '
+    output += '150px;-moz-border-radius: 150px;"> '
+
     flash("Now logged in as %s" % login_session['username'])
     return output
+
 
 # function gconnect to connect via gmail account
 @app.route('/gconnect', methods=['POST'])
@@ -119,7 +122,8 @@ def gconnect():
 
     try:
         # Upgrading the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('catalog/client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets('catalog/client_secrets.json',
+                                             scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -159,7 +163,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
+        response = make_response(json.dumps
+                                 ('Current user is already connected.'),
                                  200)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -167,7 +172,7 @@ def gconnect():
     # Storing the access token in the session for later use.
     login_session['access_token'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
-    
+
     # Getting user info
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
     params = {'access_token': credentials.access_token, 'alt': 'json'}
@@ -192,7 +197,9 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;'
+    output += 'border-radius: 150px;-webkit-border-radius:'
+    output += '150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
@@ -227,7 +234,7 @@ def fbdisconnect():
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id,access_token)
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id, access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
@@ -247,16 +254,13 @@ def gdisconnect():
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
     if result['status'] == '200':
-        #del login_session['access_token']
-        #del login_session['gplus_id']
-        #del login_session['username']
-        #del login_session['email']
-        #del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps
+                                 ('Failed to revoke token for given user.',
+                                  400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -292,13 +296,15 @@ def getUserID(email):
 def showDanceSchools():
     danceSchools = session.query(DanceSchool).all()
     if 'username' not in login_session:
-        return render_template('publicDanceSchools.html', danceSchools=danceSchools)
+        return render_template('publicDanceSchools.html',
+                               danceSchools=danceSchools)
     else:
-        return render_template('danceSchools.html', danceSchools=danceSchools)
+        return render_template('danceSchools.html',
+                               danceSchools=danceSchools)
 
 
 # Function to create a new dance school
-@app.route('/danceschools/new/', methods=['GET','POST'])
+@app.route('/danceschools/new/', methods=['GET', 'POST'])
 def createDanceSchool():
     if 'username' not in login_session:
         return redirect('/login')
@@ -318,13 +324,17 @@ def createDanceSchool():
 
 
 # Function to edit a dance school data
-@app.route('/danceschools/<int:dance_school_id>/edit/', methods=['GET','POST'])
+@app.route('/danceschools/<int:dance_school_id>/edit/',
+           methods=['GET', 'POST'])
 def editDanceSchool(dance_school_id):
     danceSchoolToUpdate = session.query(DanceSchool).filter_by(id=dance_school_id).one()
     if 'username' not in login_session:
         return redirect('/login')
     if danceSchoolToUpdate.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to edit this dance school. Please create your own dance school in order to edit.');}</script><body onload='myFunction()'>"
+        return ("<script>function myFunction() "
+                "{alert('You are not authorized to edit this dance school."
+                "Please create your own dance school in order to edit.');}"
+                "</script><body onload='myFunction()'>")
     if request.method == 'POST':
         if request.form['name']:
             danceSchoolToUpdate.name = request.form['name']
@@ -335,24 +345,31 @@ def editDanceSchool(dance_school_id):
         flash('Dance School %s has been updated!' % (danceSchoolToUpdate.name))
         return redirect(url_for('showDanceSchools'))
     else:
-        return render_template('editDanceSchool.html', danceSchool=danceSchoolToUpdate, dance_school_id=dance_school_id)
+        return render_template('editDanceSchool.html',
+                               danceSchool=danceSchoolToUpdate,
+                               dance_school_id=dance_school_id)
 
 
 # Function to delete a dance school
-@app.route('/danceschools/<int:dance_school_id>/delete/', methods=['GET','POST'])
+@app.route('/danceschools/<int:dance_school_id>/delete/', methods=['GET', 'POST'])
 def deleteDanceSchool(dance_school_id):
     danceSchoolToDelete = session.query(DanceSchool).filter_by(id=dance_school_id).one()
     if 'username' not in login_session:
         return redirect('/login')
     if danceSchoolToDelete.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to delete this dance school. Please create your own dance school in order to delete.');}</script><body onload='myFunction()'>"
+        return ("<script>function myFunction()"
+                "{alert('You are not authorized to delete this dance school. "
+                "Please create your own dance school in order to delete.');}"
+                "</script><body onload='myFunction()'>")
     if request.method == 'POST':
         session.delete(danceSchoolToDelete)
-        flash('Dance School %s has been deleted!' %(danceSchoolToDelete.name)) 
+        flash('Dance School %s has been deleted!' % (danceSchoolToDelete.name))
         session.commit()
         return redirect(url_for('showDanceSchools'))
     else:
-        return render_template('deleteDanceSchool.html', danceSchool=danceSchoolToDelete, dance_school_id=dance_school_id)
+        return render_template('deleteDanceSchool.html',
+                               danceSchool=danceSchoolToDelete,
+                               dance_school_id=dance_school_id)
 
 
 # Function to show all dance classes for a dance school
@@ -362,19 +379,28 @@ def showDanceClasses(dance_school_id):
     danceClasses = session.query(DanceClass).filter_by(dance_school_id=dance_school_id).all()
     creator = getUserInfo(danceSchool.user_id)
     if 'username' not in login_session or danceSchool.user_id != login_session['user_id']:
-        return render_template('publicDanceClasses.html', danceClasses=danceClasses, danceSchool=danceSchool)
+        return render_template('publicDanceClasses.html',
+                               danceClasses=danceClasses,
+                               danceSchool=danceSchool)
     else:
-        return render_template('danceClasses.html',danceClasses=danceClasses, danceSchool=danceSchool)
+        return render_template('danceClasses.html',
+                               danceClasses=danceClasses,
+                               danceSchool=danceSchool)
 
 
 # Function to create a new dance class
-@app.route('/danceschools/<int:dance_school_id>/danceclasses/new/', methods=['GET','POST'])
+@app.route('/danceschools/<int:dance_school_id>/danceclasses/new/',
+           methods=['GET', 'POST'])
 def createDanceClass(dance_school_id):
     danceSchool = session.query(DanceSchool).filter_by(id=dance_school_id).one()
     if 'username' not in login_session:
         return redirect('/login')
     if danceSchool.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to create a new dance class. Please create your own dance school in order to create a new dance class.');}</script><body onload='myFunction()'>"
+        return ("<script>function myFunction() "
+                "{alert('You are not authorized to create a new dance class. "
+                "Please create your own dance school in order "
+                "to create a new dance class.');}"
+                "</script><body onload='myFunction()'>")
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']
@@ -383,26 +409,33 @@ def createDanceClass(dance_school_id):
         fees = request.form['fees']
         user_id = login_session['user_id']
         danceClassToAdd = DanceClass(name=name, description=description,
-                                     teacher=teacher,sessions=sessions,
-                                     fees=fees, user_id=user_id, dance_school_id=dance_school_id)
+                                     teacher=teacher, sessions=sessions,
+                                     fees=fees, user_id=user_id,
+                                     dance_school_id=dance_school_id)
         session.add(danceClassToAdd)
         session.commit()
         flash('New Dance Class has been created!')
-        return redirect(url_for('showDanceClasses', dance_school_id=dance_school_id))
+        return redirect(url_for('showDanceClasses',
+                                dance_school_id=dance_school_id))
     else:
         return render_template('addDanceClass.html', danceSchool=danceSchool)
 
 
 # Function to edit a dance class
-@app.route('/danceschools/<int:dance_school_id>/danceclasses/<int:dance_class_id>/edit/', methods=['GET','POST'])
+@app.route('/danceschools/<int:dance_school_id>/danceclasses/<int:dance_class_id>/edit/',
+           methods=['GET', 'POST'])
 def editDanceClass(dance_school_id, dance_class_id):
     danceSchool = session.query(DanceSchool).filter_by(id=dance_school_id).one()
     danceClassToEdit = session.query(DanceClass).filter_by(id=dance_class_id).one()
     if 'username' not in login_session:
         return redirect('/login')
     if danceSchool.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to edit this dance class. Please create your own dance school in order to edit a dance class.');}</script><body onload='myFunction()'>"
-    if request.method == 'POST':                          
+        return ("<script>function myFunction() "
+                "{alert('You are not authorized to edit this dance class. "
+                "Please create your own dance school in order to"
+                " edit a dance class.');}"
+                "</script><body onload='myFunction()'>")
+    if request.method == 'POST':
         if request.form['name']:
             danceClassToEdit.name = request.form['name']
         if request.form['description']:
@@ -413,31 +446,44 @@ def editDanceClass(dance_school_id, dance_class_id):
             danceClassToEdit.sessions = request.form['sessions']
         if request.form['fees']:
             danceClassToEdit.fees = request.form['fees']
-            
+
         session.add(danceClassToEdit)
         session.commit()
-        flash('Dance Class %s has been updated!' %(danceClassToEdit.name))
-        return redirect(url_for('showDanceClasses', dance_school_id=dance_school_id))
+        flash('Dance Class %s has been updated!' % (danceClassToEdit.name))
+        return redirect(url_for('showDanceClasses',
+                                dance_school_id=dance_school_id))
     else:
-        return render_template('editDanceClass.html', danceSchool=danceSchool, danceClass=danceClassToEdit, dance_class_id=dance_class_id)
+        return render_template('editDanceClass.html',
+                               danceSchool=danceSchool,
+                               danceClass=danceClassToEdit,
+                               dance_class_id=dance_class_id)
 
 
 # Function to delete a dance class
-@app.route('/danceschools/<int:dance_school_id>/danceclasses/<int:dance_class_id>/delete/', methods=['GET','POST'])
+@app.route('/danceschools/<int:dance_school_id>/danceclasses/<int:dance_class_id>/delete/',
+           methods=['GET','POST'])
 def deleteDanceClass(dance_school_id, dance_class_id):
     danceSchool = session.query(DanceSchool).filter_by(id=dance_school_id).one()
     danceClassToDelete = session.query(DanceClass).filter_by(id=dance_class_id).one()
     if 'username' not in login_session:
         return redirect('/login')
     if danceSchool.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to delete this dance class. Please create your own dance school in order to delete a dance class.');}</script><body onload='myFunction()'>"
+        return ("<script>function myFunction() "
+                "{alert('You are not authorized to delete this dance class. "
+                "Please create your own dance school in order to "
+                "delete a dance class.');}"
+                "</script><body onload='myFunction()'>")
     if request.method == 'POST':
         session.delete(danceClassToDelete)
-        flash('Dance Class %s has been deleted!' %(danceClassToDelete.name))
+        flash('Dance Class %s has been deleted!' % (danceClassToDelete.name))
         session.commit()
-        return redirect(url_for('showDanceClasses', dance_school_id=dance_school_id))
+        return redirect(url_for('showDanceClasses',
+                                dance_school_id=dance_school_id))
     else:
-        return render_template('deleteDanceClass.html', danceSchool=danceSchool, danceClass=danceClassToDelete, dance_class_id=dance_class_id)
+        return render_template('deleteDanceClass.html',
+                               danceSchool=danceSchool,
+                               danceClass=danceClassToDelete,
+                               dance_class_id=dance_class_id)
 
 
 # JSON api endpoints - start
@@ -457,7 +503,7 @@ def showDanceClassesJSON(dance_school_id):
 
 # for a dance class
 @app.route('/danceschools/<int:dance_school_id>/danceclasses/<int:dance_class_id>/JSON')
-def showDanceClassJSON(dance_school_id,dance_class_id):
+def showDanceClassJSON(dance_school_id, dance_class_id):
     danceClass = session.query(DanceClass).filter_by(id=dance_class_id).one()
     return jsonify(danceClass=danceClass.serialize)
 
