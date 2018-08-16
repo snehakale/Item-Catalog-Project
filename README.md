@@ -87,4 +87,5 @@ eg. `.login-box {
 2. [Flask Python microframework](http://flask.pocoo.org/docs/0.12/)
 3. [Python and JSON API implementation](http://www.pythonforbeginners.com/api/python-api-and-json)
 
-
+## Author
+Sneha Kale
